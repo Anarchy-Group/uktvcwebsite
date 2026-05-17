@@ -1056,7 +1056,7 @@ async function forgotPassword(){
     await supabaseClient.auth.resetPasswordForEmail(email, {
 
         redirectTo:
-            "https://yourwebsite.com/reset-password.html"
+            "/reset-password.html"
 
     });
 
