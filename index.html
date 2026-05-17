@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>UK Television Clips</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* ---------------- RESET ---------------- */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#070b14;
+    color:white;
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* ---------------- BACKGROUND ---------------- */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(37,99,235,0.18), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(255,0,85,0.12), transparent 30%);
+    animation:bgMove 14s ease-in-out infinite alternate;
+    z-index:-4;
+}
+
+@keyframes bgMove{
+    from{
+        transform:scale(1) translateY(0px);
+    }
+    to{
+        transform:scale(1.1) translateY(-30px);
+    }
+}
+
+.noise{
+    position:fixed;
+    inset:0;
+    opacity:0.035;
+    pointer-events:none;
+    z-index:-3;
+    background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+}
+
+.bg-glow{
+    position:fixed;
+    width:700px;
+    height:700px;
+    background:#0047ff25;
+    filter:blur(120px);
+    top:-200px;
+    right:-150px;
+    z-index:-2;
+}
+
+.bg-glow2{
+    position:fixed;
+    width:600px;
+    height:600px;
+    background:#ff004425;
+    filter:blur(120px);
+    bottom:-200px;
+    left:-150px;
+    z-index:-2;
+}
+
+/* ---------------- NAV ---------------- */
+
+nav{
+    width:100%;
+    padding:20px 7%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:fixed;
+    top:0;
+    backdrop-filter:blur(16px);
+    background:rgba(7,11,20,0.65);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    z-index:1000;
+}
+
+.logo{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.5rem;
+    font-weight:700;
+}
+
+.logo span{
+    color:#60a5fa;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+.nav-links a{
+    color:#d6d6d6;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+.login-btn{
+    position:relative;
+    overflow:hidden;
+    padding:14px 24px;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 10px 30px rgba(37,99,235,0.25);
+}
+
+.login-btn::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.35),
+        transparent
+    );
+
+    transform:translateX(-100%);
+    transition:0.8s;
+}
+
+.login-btn:hover::before{
+    transform:translateX(100%);
+}
+
+.login-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* ---------------- HERO ---------------- */
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:120px 7% 80px;
+}
+
+.hero-content{
+    max-width:1300px;
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:60px;
+    align-items:center;
+}
+
+.hero-text{
+    animation:fadeUp 1s ease;
+}
+
+.hero-text h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:5rem;
+    line-height:1;
+    margin-bottom:25px;
+}
+
+.hero-text h1 span{
+    background:linear-gradient(90deg,#60a5fa,#2563eb);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero-text p{
+    color:#b9c0d3;
+    line-height:1.8;
+    margin-bottom:35px;
+    font-size:1.1rem;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+}
+
+.primary-btn{
+    position:relative;
+    overflow:hidden;
+    padding:16px 28px;
+    border-radius:16px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.primary-btn::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.3),
+        transparent
+    );
+
+    transform:translateX(-100%);
+    transition:0.7s;
+}
+
+.primary-btn:hover::before{
+    transform:translateX(100%);
+}
+
+.primary-btn:hover{
+    transform:translateY(-3px);
+}
+
+.secondary-btn{
+    padding:16px 28px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.03);
+    color:white;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.secondary-btn:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+/* ---------------- PREVIEW PANEL ---------------- */
+
+.preview-panel{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:25px;
+    backdrop-filter:blur(20px);
+    box-shadow:0 20px 60px rgba(0,0,0,0.45);
+    animation:floatPanel 6s ease-in-out infinite;
+}
+
+.preview-video{
+    width:100%;
+    height:320px;
+    border-radius:24px;
+    background:url('https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?q=80&w=1600&auto=format&fit=crop') center/cover;
+    position:relative;
+    overflow:hidden;
+}
+
+.preview-video::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);
+}
+
+.preview-lock{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:rgba(0,0,0,0.65);
+    padding:10px 16px;
+    border-radius:999px;
+    font-size:0.85rem;
+    z-index:2;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.play-button{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+}
+
+.play-button div{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(12px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.play-button div:hover{
+    transform:scale(1.08);
+    background:rgba(255,255,255,0.22);
+}
+
+.preview-info{
+    margin-top:24px;
+}
+
+.preview-info h3{
+    margin-bottom:10px;
+    font-size:1.4rem;
+}
+
+.preview-info p{
+    color:#b9c0d3;
+    line-height:1.7;
+}
+
+/* ---------------- FEATURES ---------------- */
+
+.features{
+    padding:60px 7% 100px;
+}
+
+.section-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:2.8rem;
+    margin-bottom:50px;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.feature-card{
+    position:relative;
+    overflow:hidden;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:24px;
+    padding:35px;
+    transition:1s ease;
+}
+
+.feature-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,0.04),
+        transparent
+    );
+    opacity:0;
+    transition:0.3s;
+}
+
+.feature-card:hover::before{
+    opacity:1;
+}
+
+.feature-card:hover{
+    transform:translateY(-8px);
+}
+
+.feature-card h3{
+    margin-bottom:15px;
+    font-size:1.3rem;
+}
+
+.feature-card p{
+    color:#b9c0d3;
+    line-height:1.7;
+}
+
+/* ---------------- STATS ---------------- */
+
+.stats{
+    padding:0 7% 100px;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.stat-card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:24px;
+    padding:35px;
+    text-align:center;
+    transition:1s ease;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-card h2{
+    font-size:3rem;
+    margin-bottom:10px;
+    color:#60a5fa;
+}
+
+.stat-card p{
+    color:#b9c0d3;
+}
+
+/* ---------------- LOGIN MODAL ---------------- */
+
+.login-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(12px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:0.3s;
+    z-index:5000;
+}
+
+.login-modal.active{
+    opacity:1;
+    pointer-events:auto;
+}
+
+.login-box{
+    width:92%;
+    max-width:460px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:35px;
+    transform:translateY(20px);
+    transition:0.3s;
+    box-shadow:0 25px 80px rgba(0,0,0,0.55);
+}
+
+.login-modal.active .login-box{
+    transform:translateY(0px);
+}
+
+.login-top h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:2rem;
+    margin-bottom:10px;
+}
+
+.login-top p{
+    color:#9ca3af;
+    line-height:1.6;
+    margin-bottom:30px;
+}
+
+.input-group{
+    margin-bottom:20px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:10px;
+    font-size:0.92rem;
+    color:#d1d5db;
+}
+
+.input-group input{
+    width:100%;
+    padding:16px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:#1f2937;
+    color:white;
+    font-size:0.95rem;
+    outline:none;
+    transition:0.3s;
+}
+
+.input-group input:focus{
+    border-color:#3b82f6;
+    box-shadow:0 0 0 4px rgba(59,130,246,0.15);
+}
+
+.submit-login{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:10px;
+    transition:0.3s;
+}
+
+.submit-login:hover{
+    transform:translateY(-2px);
+    box-shadow:0 15px 35px rgba(37,99,235,0.35);
+}
+
+.close-modal{
+    width:100%;
+    padding:15px;
+    margin-top:14px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:transparent;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.close-modal:hover{
+    background:rgba(255,255,255,0.05);
+}
+
+.auth-switch{
+    margin-top:22px;
+    text-align:center;
+    color:#9ca3af;
+    font-size:0.92rem;
+}
+
+.auth-switch span{
+    color:#60a5fa;
+    cursor:pointer;
+}
+
+/* ---------------- REVEAL ---------------- */
+
+.reveal{
+    opacity:0;
+    transform:translateY(60px);
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:translateY(0px);
+}
+
+/* ---------------- ANIMATIONS ---------------- */
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0px);
+    }
+}
+
+@keyframes floatPanel{
+    0%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-12px);
+    }
+    100%{
+        transform:translateY(0px);
+    }
+}
+
+/* ---------------- FOOTER ---------------- */
+
+footer{
+    padding:50px 7%;
+    border-top:1px solid rgba(255,255,255,0.08);
+    color:#9ca3af;
+    text-align:center;
+}
+
+/* ---------------- MOBILE ---------------- */
+
+@media(max-width:950px){
+
+    .hero-content{
+        grid-template-columns:1fr;
+    }
+
+    .hero-text h1{
+        font-size:3.4rem;
+    }
+
+    .nav-links a{
+        display:none;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="noise"></div>
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+
+<!-- NAV -->
+
+<nav>
+
+    <div class="logo">
+        UK<span>TV</span>Clips
+    </div>
+
+    <div class="nav-links">
+
+        <a href="#">Archive</a>
+        <a href="#">Collections</a>
+        <a href="#">Channels</a>
+        <a href="#">About</a>
+
+        <button class="login-btn" onclick="openLoginModal()">
+            Login
+        </button>
+
+    </div>
+
+</nav>
+
+<!-- LOGIN MODAL -->
+
+<div class="login-modal" id="loginModal">
+
+    <div class="login-box">
+
+        <div class="login-top">
+
+            <h2 id="authTitle">Member Login</h2>
+
+            <p id="authDescription">
+                Sign in to access the protected UK television archive.
+            </p>
+
+        </div>
+
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com">
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+
+        <button class="submit-login" id="authButton">
+            Login
+        </button>
+
+        <div class="auth-switch">
+            <span id="switchAuth" onclick="toggleAuthMode()">
+                Create an account
+            </span>
+        </div>
+
+        <button class="close-modal" onclick="closeLoginModal()">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-text">
+
+            <h1>
+                Britain’s Television History,
+                <span>Digitally Preserved.</span>
+            </h1>
+
+            <p>
+                Explore a premium archive of British television history featuring continuity,
+                idents, classic broadcasts, commercials, emergency broadcasts and nostalgic TV moments —
+                all securely preserved for members.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#" class="primary-btn" onclick="openLoginModal()">
+                    Access Archive
+                </a>
+
+                <a href="#" class="secondary-btn">
+                    Browse Collections
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="preview-panel reveal">
+
+            <div class="preview-video">
+
+                <div class="preview-lock">
+                    🔒 Members Only
+                </div>
+
+                <div class="play-button">
+                    <div onclick="openLoginModal()">▶</div>
+                </div>
+
+            </div>
+
+            <div class="preview-info">
+
+                <h3>BBC One Continuity — 1997</h3>
+
+                <p>
+                    Digitally preserved continuity footage from BBC One including announcer intros,
+                    programme transitions and late-night broadcast segments.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FEATURES -->
+
+<section class="features reveal">
+
+    <h2 class="section-title">
+        Built For Television Archiving
+    </h2>
+
+    <div class="feature-grid">
+
+        <div class="feature-card reveal" style="transition-delay:0.1s;">
+            <h3>🔒 Protected Streaming</h3>
+            <p>
+                All clips remain securely behind a member login system with future API authentication support.
+            </p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:0.2s;">
+            <h3>📺 Broadcaster Collections</h3>
+            <p>
+                Organise clips by BBC, ITV, Channel 4, Sky, regional television and archival categories.
+            </p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:0.3s;">
+            <h3>⚡ Future API Ready</h3>
+            <p>
+                Built with expandable architecture ready for future streaming APIs and metadata systems.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- STATS -->
+
+<section class="stats reveal">
+
+    <h2 class="section-title">
+        Archive Statistics
+    </h2>
+
+    <div class="stats-grid">
+
+        <div class="stat-card reveal" style="transition-delay:0.1s;">
+            <h2>12K+</h2>
+            <p>Archived Clips</p>
+        </div>
+
+        <div class="stat-card reveal" style="transition-delay:0.2s;">
+            <h2>140+</h2>
+            <p>Television Channels</p>
+        </div>
+
+        <div class="stat-card reveal" style="transition-delay:0.3s;">
+            <h2>1950s</h2>
+            <p>Earliest Preserved Footage</p>
+        </div>
+
+        <div class="stat-card reveal" style="transition-delay:0.4s;">
+            <h2>24/7</h2>
+            <p>Digital Preservation</p>
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    © 2026 United Kingdom Television Clips
+</footer>
+
+<script>
+
+/* ---------------- SUPABASE ---------------- */
+
+const SUPABASE_URL = "https://jihpgbsghatuwwkacsur.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHBnYnNnaGF0dXd3a2Fjc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzkxNzcsImV4cCI6MjA5MzcxNTE3N30.qH7iso7t2zoOLi0C68DiUKZecyIDhlxVcJAcNhYLHTk";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+/* ---------------- LOGIN MODAL ---------------- */
+
+const loginModal = document.getElementById("loginModal");
+
+function openLoginModal(){
+    loginModal.classList.add("active");
+}
+
+function closeLoginModal(){
+    loginModal.classList.remove("active");
+}
+
+window.addEventListener("click", function(e){
+
+    if(e.target === loginModal){
+        closeLoginModal();
+    }
+
+});
+
+/* ---------------- AUTH MODES ---------------- */
+
+let isLoginMode = true;
+
+const authTitle = document.getElementById("authTitle");
+const authDescription = document.getElementById("authDescription");
+const authButton = document.getElementById("authButton");
+const switchAuth = document.getElementById("switchAuth");
+
+function toggleAuthMode(){
+
+    isLoginMode = !isLoginMode;
+
+    if(isLoginMode){
+
+        authTitle.innerText = "Member Login";
+
+        authDescription.innerText =
+            "Sign in to access the protected UK television archive.";
+
+        authButton.innerText = "Login";
+
+        switchAuth.innerText = "Create an account";
+
+    }else{
+
+        authTitle.innerText = "Create Account";
+
+        authDescription.innerText =
+            "Create your archive account to access member-only clips.";
+
+        authButton.innerText = "Create Account";
+
+        switchAuth.innerText = "Already have an account? Login";
+
+    }
+
+}
+
+/* ---------------- AUTH ---------------- */
+
+authButton.addEventListener("click", async () => {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if(!email || !password){
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    if(isLoginMode){
+
+        const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if(error){
+            alert(error.message);
+            return;
+        }
+
+        alert("Successfully logged in!");
+        closeLoginModal();
+
+    }else{
+
+        const { data, error } =
+        await supabaseClient.auth.signUp({
+            email,
+            password
+        });
+
+        if(error){
+            alert(error.message);
+            return;
+        }
+
+        alert("Account created! Check your email.");
+        closeLoginModal();
+
+    }
+
+});
+
+/* ---------------- REVEAL ANIMATIONS ---------------- */
+
+const reveals = document.querySelectorAll(".reveal");
+
+function revealElements(){
+
+    reveals.forEach((element) => {
+
+        const windowHeight = window.innerHeight;
+        const revealTop = element.getBoundingClientRect().top;
+        const revealPoint = 100;
+
+        if(revealTop < windowHeight - revealPoint){
+
+            element.classList.add("active");
+
+        }else{
+
+            element.classList.remove("active");
+
+        }
+
+    });
+
+}
+
+/* RUN ON LOAD */
+revealElements();
+
+/* RUN ON SCROLL */
+window.addEventListener("scroll", revealElements);
+
+</script>
+
+</body>
+</html>
