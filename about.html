@@ -184,7 +184,176 @@ nav{
     transform:translateY(-3px);
     box-shadow:0 18px 35px rgba(37,99,235,0.35);
 }
+/* ====================================== */
+/* ACCOUNT AREA */
+/* ====================================== */
 
+.account-area{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.account-profile{
+    position:relative;
+}
+
+.account-button{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 18px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.04);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.account-button:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.avatar{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:0.9rem;
+}
+
+.account-dropdown{
+    position:absolute;
+    top:70px;
+    right:0;
+    width:220px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:22px;
+    padding:14px;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:0.3s;
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+}
+
+.account-profile.active .account-dropdown{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0px);
+}
+
+.dropdown-email{
+    color:#9ca3af;
+    font-size:0.85rem;
+    margin-bottom:14px;
+    word-break:break-word;
+}
+
+.logout-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#1f2937;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.logout-btn:hover{
+    background:#374151;
+}
+/* ====================================== */
+/* ACCOUNT DROPDOWN UPGRADE */
+/* ====================================== */
+
+.account-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.account-name{
+    font-size:0.95rem;
+    font-weight:600;
+}
+
+.account-status{
+    font-size:0.78rem;
+    color:#60a5fa;
+}
+
+.dropdown-header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding-bottom:18px;
+    margin-bottom:18px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.dropdown-avatar{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:1rem;
+}
+
+.dropdown-name{
+    font-weight:600;
+    margin-bottom:4px;
+}
+
+.dropdown-links{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:18px;
+}
+
+.dropdown-links a{
+    padding:12px 14px;
+    border-radius:14px;
+    color:#d1d5db;
+    text-decoration:none;
+    transition:0.3s;
+    font-size:0.92rem;
+    background:transparent;
+}
+
+.dropdown-links a:hover{
+    background:rgba(255,255,255,0.06);
+    color:white;
+    transform:translateX(4px);
+}
+
+.logout-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#1f2937;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+    font-size:0.92rem;
+}
+
+.logout-btn:hover{
+    background:#374151;
+}
 /* ====================================== */
 /* HERO */
 /* ====================================== */
@@ -1174,7 +1343,146 @@ async function forgotPassword(){
     alert("Password reset email sent!");
 
 }
+/* ====================================== */
+/* LOAD USER */
+/* ====================================== */
 
+async function loadUser(){
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    const accountArea =
+    document.getElementById("accountArea");
+
+    if(user){
+
+        const email = user.email;
+
+        const username =
+        email.split("@")[0];
+
+        const firstLetter =
+        username.charAt(0).toUpperCase();
+
+        accountArea.innerHTML = `
+
+            <div class="account-profile" id="accountProfile">
+
+                <button
+                    class="account-button"
+                    onclick="toggleDropdown()">
+
+                    <div class="avatar">
+                        ${firstLetter}
+                    </div>
+
+                    <div class="account-meta">
+
+                        <span class="account-name">
+                            ${username}
+                        </span>
+
+                        <span class="account-status">
+                            Member
+                        </span>
+
+                    </div>
+
+                </button>
+
+                <div class="account-dropdown">
+
+                    <div class="dropdown-header">
+
+                        <div class="dropdown-avatar">
+                            ${firstLetter}
+                        </div>
+
+                        <div>
+
+                            <div class="dropdown-name">
+                                ${username}
+                            </div>
+
+                            <div class="dropdown-email">
+                                ${email}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="dropdown-links">
+
+                        <a href="#">
+                            👤 My Profile
+                        </a>
+
+                        <a href="#">
+                            📺 Continue Watching
+                        </a>
+
+                        <a href="#">
+                            ⭐ Saved Clips
+                        </a>
+
+                        <a href="#">
+                            🕓 Watch History
+                        </a>
+
+                        <a href="#">
+                            ⚙️ Settings
+                        </a>
+
+                    </div>
+
+                    <button
+                        class="logout-btn"
+                        onclick="logout()">
+
+                        🚪 Sign Out
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+}
+    /* ====================================== */
+/* DROPDOWN */
+/* ====================================== */
+
+function toggleDropdown(){
+
+    const profile =
+    document.getElementById("accountProfile");
+
+    profile.classList.toggle("active");
+
+}
+    /* ====================================== */
+/* LOGOUT */
+/* ====================================== */
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    location.reload();
+
+}
+    /* ====================================== */
+/* RESTORE SESSION */
+/* ====================================== */
+
+loadUser();
 /* ====================================== */
 /* REVEAL ANIMATIONS */
 /* ====================================== */
