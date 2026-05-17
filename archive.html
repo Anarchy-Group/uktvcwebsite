@@ -400,6 +400,12 @@ nav{
 /* CATEGORY GRID */
 /* ====================================== */
 
+.categories{
+    padding:0 7% 180px;
+    position:relative;
+    z-index:2;
+}
+    
 .category-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
@@ -409,7 +415,7 @@ nav{
 .category-card{
     position:relative;
     overflow:hidden;
-    min-height:320px;
+    min-height:260px;
     border-radius:34px;
     padding:30px;
     display:flex;
@@ -553,19 +559,6 @@ nav{
     transform:translateX(8px);
 }
 
-/* ====================================== */
-/* CATEGORY REVEAL */
-/* ====================================== */
-
-.category-card{
-    opacity:0;
-    transform:translateY(60px);
-}
-
-.category-card.active{
-    opacity:1;
-    transform:translateY(0px);
-}
 
 /* ====================================== */
 /* MOBILE */
@@ -589,6 +582,8 @@ nav{
 
 .recent{
     padding:0 7% 120px;
+    position:relative;
+    z-index:1;
 }
 
 .recent-grid{
