@@ -284,24 +284,13 @@ nav{
 
 .video-js .vjs-control-bar{
 
-    height:90px;
+    display:flex !important;
+    align-items:center !important;
 
     padding:
-        0 22px;
+        0 20px !important;
 
-    background:
-        linear-gradient(
-            to top,
-            rgba(0,0,0,0.92),
-            rgba(0,0,0,0.35),
-            transparent
-        );
-
-    backdrop-filter:
-        blur(22px);
-
-    display:flex;
-    align-items:center;
+    gap:8px;
 }
 
 /* ====================================== */
@@ -321,19 +310,19 @@ nav{
 }
 
 /* ====================================== */
-/* PLAY BUTTON */
+/* BIG PLAY BUTTON */
 /* ====================================== */
 
 .video-js .vjs-big-play-button{
 
-    width:120px;
-    height:120px;
+    width:120px !important;
+    height:120px !important;
 
-    border-radius:50%;
-    border:none;
+    border-radius:50% !important;
+    border:none !important;
 
     background:
-        rgba(255,255,255,0.10);
+        rgba(255,255,255,0.10) !important;
 
     backdrop-filter:
         blur(20px);
@@ -343,26 +332,41 @@ nav{
 
     transition:0.35s;
 
-    top:50%;
-    left:50%;
+    top:50% !important;
+    left:50% !important;
 
     transform:
-        translate(-50%,-50%);
+        translate(-50%,-50%) !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    padding:0 !important;
 }
 
 .video-js:hover .vjs-big-play-button{
 
     transform:
         translate(-50%,-50%)
-        scale(1.08);
+        scale(1.08) !important;
 
     background:
-        rgba(255,255,255,0.14);
+        rgba(255,255,255,0.14) !important;
 }
+
+/* PLAY ICON */
 
 .video-js .vjs-big-play-button .vjs-icon-placeholder:before{
 
-    font-size:3.4rem;
+    font-size:4.2rem !important;
+
+    line-height:1 !important;
+
+    position:relative !important;
+
+    top:0 !important;
+    left:4px !important;
 }
 
 /* ====================================== */
@@ -377,13 +381,7 @@ nav{
 
 .video-js .vjs-progress-holder{
 
-    height:7px;
-    border-radius:999px;
-
-    background:
-        rgba(255,255,255,0.12);
-
-    transition:0.25s;
+    margin:0 14px !important;
 }
 
 .video-js:hover .vjs-progress-holder{
@@ -491,7 +489,10 @@ nav{
 
 .video-js .vjs-control{
 
-    width:48px;
+    width:58px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
 }
 
 /* ====================================== */
@@ -532,6 +533,43 @@ nav{
         height:90px;
     }
 
+}
+/* ====================================== */
+/* ICON ALIGNMENT FIX */
+/* ====================================== */
+
+.video-js .vjs-icon-placeholder{
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+}
+
+.video-js .vjs-button > .vjs-icon-placeholder:before{
+
+    line-height:1 !important;
+    font-size:1.8rem !important;
+}
+
+/* PLAY/PAUSE */
+
+.video-js .vjs-play-control .vjs-icon-placeholder:before{
+
+    font-size:2rem !important;
+}
+
+/* FULLSCREEN */
+
+.video-js .vjs-fullscreen-control .vjs-icon-placeholder:before{
+
+    font-size:1.6rem !important;
+}
+
+/* VOLUME */
+
+.video-js .vjs-volume-menu-button .vjs-icon-placeholder:before{
+
+    font-size:1.8rem !important;
 }
 /* ====================================== */
 /* VIDEO CONTENT */
