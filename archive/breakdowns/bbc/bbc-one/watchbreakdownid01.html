@@ -767,7 +767,116 @@ nav{
     opacity:1;
     transform:translateY(0px);
 }
+/* ====================================== */
+/* VIDEO ACTIONS */
+/* ====================================== */
 
+.video-actions{
+
+    display:flex;
+    gap:18px;
+    margin-top:36px;
+    flex-wrap:wrap;
+}
+
+.action-button{
+
+    padding:
+        16px 24px;
+
+    border-radius:18px;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:0.35s;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:220px;
+}
+
+.primary-action{
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    color:white;
+
+    box-shadow:
+        0 15px 35px rgba(37,99,235,0.35);
+}
+
+.primary-action:hover{
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 20px 45px rgba(37,99,235,0.45);
+}
+
+.secondary-action{
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    color:white;
+
+    backdrop-filter:
+        blur(14px);
+}
+
+.secondary-action:hover{
+
+    transform:
+        translateY(-4px);
+
+    background:
+        rgba(255,255,255,0.08);
+}
+
+/* ====================================== */
+/* DOWNLOAD BADGES */
+/* ====================================== */
+
+.download-meta{
+
+    display:flex;
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    margin-top:22px;
+}
+
+.download-badge{
+
+    padding:
+        10px 16px;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,0.04);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    color:#cbd5e1;
+
+    font-size:0.88rem;
+}
 /* ====================================== */
 /* MOBILE */
 /* ====================================== */
