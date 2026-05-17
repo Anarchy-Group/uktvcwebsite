@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BBC One Breakdown — UK Television Clips</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<!-- VIDEO.JS -->
+<link
+    href="https://vjs.zencdn.net/8.16.1/video-js.css"
+    rel="stylesheet">
+
+<script src="https://vjs.zencdn.net/8.16.1/video.min.js"></script>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* ====================================== */
+/* RESET */
+/* ====================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#070b14;
+    color:white;
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* ====================================== */
+/* BACKGROUND */
+/* ====================================== */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(37,99,235,0.18), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(255,0,85,0.12), transparent 30%);
+    animation:bgMove 14s ease-in-out infinite alternate;
+    z-index:-4;
+}
+
+@keyframes bgMove{
+
+    from{
+        transform:scale(1) translateY(0px);
+    }
+
+    to{
+        transform:scale(1.1) translateY(-30px);
+    }
+
+}
+
+.noise{
+    position:fixed;
+    inset:0;
+    opacity:0.035;
+    pointer-events:none;
+    z-index:-3;
+    background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+}
+
+/* ====================================== */
+/* NAV */
+/* ====================================== */
+
+nav{
+    width:100%;
+    padding:20px 7%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:fixed;
+    top:0;
+    backdrop-filter:blur(16px);
+    background:rgba(7,11,20,0.65);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    z-index:1000;
+}
+
+.logo{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.5rem;
+    font-weight:700;
+}
+
+.logo span{
+    color:#60a5fa;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+.nav-links a{
+    color:#d6d6d6;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+/* ====================================== */
+/* ACCOUNT */
+/* ====================================== */
+
+.account-area{
+    display:flex;
+    align-items:center;
+}
+
+.account-profile{
+    position:relative;
+}
+
+.account-button{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 18px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.04);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.account-button:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #60a5fa
+        );
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+}
+
+.account-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.account-name{
+    font-size:0.95rem;
+    font-weight:600;
+}
+
+.account-status{
+    font-size:0.78rem;
+    color:#60a5fa;
+}
+
+.account-dropdown{
+    position:absolute;
+    top:75px;
+    right:0;
+    width:260px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:24px;
+    padding:18px;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:0.3s;
+    box-shadow:
+        0 25px 60px
+        rgba(0,0,0,0.45);
+}
+
+.account-profile.active
+.account-dropdown{
+
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0px);
+
+}
+
+.dropdown-links{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.dropdown-links a{
+    padding:12px 14px;
+    border-radius:14px;
+    color:#d1d5db;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.dropdown-links a:hover{
+    background:
+        rgba(255,255,255,0.06);
+
+    transform:translateX(4px);
+}
+
+/* ====================================== */
+/* PLAYER SECTION */
+/* ====================================== */
+
+.player-section{
+    padding:150px 7% 80px;
+}
+
+.player-layout{
+    display:grid;
+    grid-template-columns:1.5fr 0.5fr;
+    gap:32px;
+    align-items:start;
+}
+
+/* ====================================== */
+/* PLAYER CARD */
+/* ====================================== */
+
+.player-card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:36px;
+    overflow:hidden;
+    backdrop-filter:blur(20px);
+    box-shadow:0 35px 80px rgba(0,0,0,0.45);
+}
+
+/* ====================================== */
+/* VIDEO.JS CUSTOM */
+/* ====================================== */
+
+.video-js{
+    width:100%;
+    height:720px;
+    background:#000;
+}
+
+.video-js .vjs-control-bar{
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,0.85),
+            rgba(0,0,0,0.4)
+        );
+
+    height:70px;
+    backdrop-filter:blur(20px);
+}
+
+.video-js .vjs-play-progress{
+    background:#60a5fa;
+}
+
+.video-js .vjs-volume-level{
+    background:#60a5fa;
+}
+
+.video-js .vjs-big-play-button{
+    width:110px;
+    height:110px;
+    line-height:110px;
+    border-radius:50%;
+    border:none;
+    background:
+        rgba(255,255,255,0.12);
+
+    backdrop-filter:blur(14px);
+
+    transition:0.3s;
+
+    top:50%;
+    left:50%;
+
+    transform:
+        translate(-50%,-50%);
+}
+
+.video-js:hover .vjs-big-play-button{
+    transform:
+        translate(-50%,-50%)
+        scale(1.08);
+}
+
+.video-js .vjs-big-play-button .vjs-icon-placeholder:before{
+    font-size:3rem;
+}
+
+.video-js .vjs-slider{
+    background:
+        rgba(255,255,255,0.15);
+}
+
+/* ====================================== */
+/* VIDEO CONTENT */
+/* ====================================== */
+
+.video-content{
+    padding:36px;
+}
+
+.video-tag{
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(96,165,250,0.12);
+    border:1px solid rgba(96,165,250,0.18);
+    color:#93c5fd;
+    margin-bottom:24px;
+    font-size:0.9rem;
+}
+
+.video-content h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:3rem;
+    line-height:1.1;
+    margin-bottom:20px;
+}
+
+.video-description{
+    color:#b9c0d3;
+    line-height:1.9;
+    font-size:1.02rem;
+    margin-bottom:32px;
+}
+
+/* ====================================== */
+/* META */
+/* ====================================== */
+
+.video-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+}
+
+.meta-box{
+    padding:16px 20px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.06);
+}
+
+.meta-label{
+    color:#9ca3af;
+    font-size:0.82rem;
+    margin-bottom:8px;
+}
+
+.meta-value{
+    font-weight:600;
+}
+
+/* ====================================== */
+/* SIDEBAR */
+/* ====================================== */
+
+.sidebar{
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+}
+
+.sidebar-card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:28px;
+    overflow:hidden;
+    transition:0.35s;
+    cursor:pointer;
+    backdrop-filter:blur(20px);
+}
+
+.sidebar-card:hover{
+    transform:translateY(-6px);
+}
+
+.sidebar-thumbnail{
+    height:160px;
+    overflow:hidden;
+}
+
+.sidebar-thumbnail img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.sidebar-content{
+    padding:22px;
+}
+
+.sidebar-content h3{
+    margin-bottom:12px;
+    font-size:1.2rem;
+}
+
+.sidebar-content p{
+    color:#b9c0d3;
+    line-height:1.7;
+    font-size:0.95rem;
+}
+
+/* ====================================== */
+/* REVEAL */
+/* ====================================== */
+
+.reveal{
+    opacity:0;
+    transform:translateY(60px);
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:translateY(0px);
+}
+
+/* ====================================== */
+/* MOBILE */
+/* ====================================== */
+
+@media(max-width:1200px){
+
+    .player-layout{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:900px){
+
+    .video-js{
+        height:260px;
+    }
+
+    .video-content h1{
+        font-size:2.3rem;
+    }
+
+    .nav-links a{
+        display:none;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="noise"></div>
+
+<!-- NAV -->
+
+<nav>
+
+    <div class="logo">
+        UK<span>TV</span>Clips
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Home</a>
+        <a href="/archive/">Archive</a>
+        <a href="/archive/breakdowns/">Breakdowns</a>
+        <a href="/archive/breakdowns/bbc/">BBC</a>
+
+    </div>
+
+</nav>
+
+<!-- PLAYER -->
+
+<section class="player-section">
+
+    <div class="player-layout">
+
+        <!-- MAIN PLAYER -->
+
+        <div class="player-card reveal">
+
+            <video
+                id="archivePlayer"
+                class="video-js vjs-big-play-centered"
+                controls
+                preload="auto"
+                poster="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1600&auto=format&fit=crop">
+
+                <source
+                    src="/videos/bbc-one-breakdown-1998.mp4"
+                    type="video/mp4">
+
+            </video>
+
+            <div class="video-content">
+
+                <div class="video-tag">
+                    BBC One • Transmission Failure
+                </div>
+
+                <h1>
+                    BBC One Breakdown Example
+                </h1>
+
+                <p class="video-description">
+                    Preserved BBC One analogue transmission interruption
+                    featuring continuity failure and emergency fallback footage
+                    recorded during late-night broadcasting.
+                </p>
+
+                <div class="video-meta">
+
+                    <div class="meta-box">
+
+                        <div class="meta-label">
+                            Year
+                        </div>
+
+                        <div class="meta-value">
+                            1998
+                        </div>
+
+                    </div>
+
+                    <div class="meta-box">
+
+                        <div class="meta-label">
+                            Duration
+                        </div>
+
+                        <div class="meta-value">
+                            02:31
+                        </div>
+
+                    </div>
+
+                    <div class="meta-box">
+
+                        <div class="meta-label">
+                            Broadcaster
+                        </div>
+
+                        <div class="meta-value">
+                            BBC One
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- SIDEBAR -->
+
+        <div class="sidebar">
+
+            <div class="sidebar-card reveal">
+
+                <div class="sidebar-thumbnail">
+
+                    <img src="https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?q=80&w=1200&auto=format&fit=crop">
+
+                </div>
+
+                <div class="sidebar-content">
+
+                    <h3>
+                        BBC One Continuity Failure
+                    </h3>
+
+                    <p>
+                        Historic analogue continuity interruption
+                        from overnight BBC broadcasting.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="sidebar-card reveal">
+
+                <div class="sidebar-thumbnail">
+
+                    <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200&auto=format&fit=crop">
+
+                </div>
+
+                <div class="sidebar-content">
+
+                    <h3>
+                        Emergency Fallback Footage
+                    </h3>
+
+                    <p>
+                        Preserved BBC emergency fallback transmission
+                        recording from the analogue era.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+/* ====================================== */
+/* SUPABASE */
+/* ====================================== */
+
+const SUPABASE_URL =
+"https://jihpgbsghatuwwkacsur.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHBnYnNnaGF0dXd3a2Fjc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzkxNzcsImV4cCI6MjA5MzcxNTE3N30.qH7iso7t2zoOLi0C68DiUKZecyIDhlxVcJAcNhYLHTk";
+
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+/* ====================================== */
+/* PROTECT PAGE */
+/* ====================================== */
+
+async function protectPage(){
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if(!user){
+
+        window.location.href = "/";
+
+        return;
+
+    }
+
+    loadUser(user);
+
+}
+
+protectPage();
+
+/* ====================================== */
+/* LOAD USER */
+/* ====================================== */
+
+function loadUser(user){
+
+    const email =
+    user.email;
+
+    const username =
+    email.split("@")[0];
+
+    const firstLetter =
+    username.charAt(0).toUpperCase();
+
+    const navLinks =
+    document.querySelector(".nav-links");
+
+    const accountArea =
+    document.createElement("div");
+
+    accountArea.className =
+    "account-area";
+
+    accountArea.innerHTML = `
+
+        <div
+            class="account-profile"
+            id="accountProfile">
+
+            <button
+                class="account-button"
+                onclick="toggleDropdown()">
+
+                <div class="avatar">
+                    ${firstLetter}
+                </div>
+
+                <div class="account-meta">
+
+                    <span class="account-name">
+                        ${username}
+                    </span>
+
+                    <span class="account-status">
+                        Archive Member
+                    </span>
+
+                </div>
+
+            </button>
+
+            <div class="account-dropdown">
+
+                <div class="dropdown-links">
+
+                    <a href="#">
+                        👤 My Profile
+                    </a>
+
+                    <a href="#">
+                        📺 Continue Watching
+                    </a>
+
+                    <a href="#">
+                        ⭐ Saved Clips
+                    </a>
+
+                    <a href="#">
+                        🕓 Watch History
+                    </a>
+
+                    <a href="#">
+                        ⚙️ Settings
+                    </a>
+
+                    <a
+                        href="#"
+                        onclick="logout()">
+
+                        🚪 Sign Out
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+    navLinks.appendChild(accountArea);
+
+}
+
+/* ====================================== */
+/* DROPDOWN */
+/* ====================================== */
+
+function toggleDropdown(){
+
+    const profile =
+    document.getElementById(
+        "accountProfile"
+    );
+
+    profile.classList.toggle(
+        "active"
+    );
+
+}
+
+/* ====================================== */
+/* LOGOUT */
+/* ====================================== */
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href = "/";
+
+}
+
+/* ====================================== */
+/* VIDEO PLAYER */
+/* ====================================== */
+
+const player = videojs('archivePlayer', {
+
+    fluid:true,
+    responsive:true,
+
+    playbackRates:[
+        0.5,
+        1,
+        1.25,
+        1.5,
+        2
+    ]
+
+});
+
+/* ====================================== */
+/* REVEAL ANIMATIONS */
+/* ====================================== */
+
+const reveals =
+document.querySelectorAll(".reveal");
+
+function revealElements(){
+
+    reveals.forEach((element) => {
+
+        const windowHeight =
+        window.innerHeight;
+
+        const revealTop =
+        element.getBoundingClientRect().top;
+
+        const revealPoint = 100;
+
+        if(revealTop < windowHeight - revealPoint){
+
+            element.classList.add("active");
+
+        }
+
+    });
+
+}
+
+revealElements();
+
+window.addEventListener(
+    "scroll",
+    revealElements
+);
+
+</script>
+
+</body>
+</html>
