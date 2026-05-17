@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BBC Breakdowns — UK Television Clips</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* ====================================== */
+/* RESET */
+/* ====================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#070b14;
+    color:white;
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* ====================================== */
+/* BACKGROUND */
+/* ====================================== */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(37,99,235,0.18), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(255,0,85,0.12), transparent 30%);
+    animation:bgMove 14s ease-in-out infinite alternate;
+    z-index:-4;
+}
+
+@keyframes bgMove{
+
+    from{
+        transform:scale(1) translateY(0px);
+    }
+
+    to{
+        transform:scale(1.1) translateY(-30px);
+    }
+
+}
+
+.noise{
+    position:fixed;
+    inset:0;
+    opacity:0.035;
+    pointer-events:none;
+    z-index:-3;
+    background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+}
+
+/* ====================================== */
+/* NAV */
+/* ====================================== */
+
+nav{
+    width:100%;
+    padding:20px 7%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:fixed;
+    top:0;
+    backdrop-filter:blur(16px);
+    background:rgba(7,11,20,0.65);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    z-index:1000;
+}
+
+.logo{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.5rem;
+    font-weight:700;
+}
+
+.logo span{
+    color:#60a5fa;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+.nav-links a{
+    color:#d6d6d6;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+/* ====================================== */
+/* ACCOUNT */
+/* ====================================== */
+
+.account-area{
+    display:flex;
+    align-items:center;
+}
+
+.account-profile{
+    position:relative;
+}
+
+.account-button{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 18px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.04);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.account-button:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+}
+
+.account-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.account-name{
+    font-size:0.95rem;
+    font-weight:600;
+}
+
+.account-status{
+    font-size:0.78rem;
+    color:#60a5fa;
+}
+
+.account-dropdown{
+    position:absolute;
+    top:75px;
+    right:0;
+    width:260px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:24px;
+    padding:18px;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:0.3s;
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+}
+
+.account-profile.active .account-dropdown{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0px);
+}
+
+.dropdown-links{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.dropdown-links a{
+    padding:12px 14px;
+    border-radius:14px;
+    color:#d1d5db;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.dropdown-links a:hover{
+    background:rgba(255,255,255,0.06);
+    transform:translateX(4px);
+}
+
+/* ====================================== */
+/* HERO */
+/* ====================================== */
+
+.hero{
+    padding:170px 7% 70px;
+}
+
+.hero-tag{
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(96,165,250,0.12);
+    border:1px solid rgba(96,165,250,0.18);
+    color:#93c5fd;
+    margin-bottom:28px;
+}
+
+.hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:5rem;
+    line-height:1;
+    margin-bottom:24px;
+}
+
+.hero h1 span{
+    background:linear-gradient(90deg,#60a5fa,#2563eb);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+    color:#b9c0d3;
+    max-width:700px;
+    line-height:1.9;
+    font-size:1.05rem;
+}
+
+/* ====================================== */
+/* CHANNEL GRID */
+/* ====================================== */
+
+.channels{
+    padding:0 7% 120px;
+}
+
+.section-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:3rem;
+    margin-bottom:50px;
+}
+
+.channel-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:28px;
+}
+
+.channel-card{
+    position:relative;
+    overflow:hidden;
+    min-height:260px;
+    border-radius:34px;
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    transition:0.45s cubic-bezier(.16,1,.3,1);
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(20px);
+    text-decoration:none;
+    color:white;
+}
+
+.channel-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.04),
+            transparent
+        );
+}
+
+.channel-card:hover{
+    transform:
+        translateY(-12px)
+        scale(1.02);
+
+    box-shadow:
+        0 35px 80px rgba(0,0,0,0.45);
+
+    border-color:
+        rgba(96,165,250,0.22);
+}
+
+.channel-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.channel-icon{
+    width:72px;
+    height:72px;
+    border-radius:24px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    transition:0.4s;
+}
+
+.channel-card:hover .channel-icon{
+    transform:
+        scale(1.08)
+        rotate(-4deg);
+}
+
+.channel-count{
+    padding:10px 16px;
+    border-radius:999px;
+    background:rgba(96,165,250,0.12);
+    border:1px solid rgba(96,165,250,0.18);
+    color:#93c5fd;
+    font-size:0.82rem;
+}
+
+.channel-content h3{
+    font-size:2rem;
+    margin-bottom:16px;
+    font-family:'Space Grotesk',sans-serif;
+}
+
+.channel-content p{
+    color:#cbd5e1;
+    line-height:1.8;
+}
+
+.channel-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:28px;
+    color:#93c5fd;
+    font-weight:600;
+}
+
+.arrow{
+    font-size:1.4rem;
+    transition:0.35s;
+}
+
+.channel-card:hover .arrow{
+    transform:translateX(8px);
+}
+
+/* ====================================== */
+/* REVEALS */
+/* ====================================== */
+
+.reveal{
+    opacity:0;
+    transform:translateY(60px);
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:translateY(0px);
+}
+
+/* ====================================== */
+/* FOOTER */
+/* ====================================== */
+
+footer{
+    padding:50px 7%;
+    border-top:1px solid rgba(255,255,255,0.08);
+    color:#9ca3af;
+    text-align:center;
+}
+
+/* ====================================== */
+/* MOBILE */
+/* ====================================== */
+
+@media(max-width:900px){
+
+    .hero h1{
+        font-size:3.5rem;
+    }
+
+    .nav-links a{
+        display:none;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="noise"></div>
+
+<!-- NAV -->
+
+<nav>
+
+    <div class="logo">
+        UK<span>TV</span>Clips
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Home</a>
+        <a href="/archive/">Archive</a>
+        <a href="/archive/breakdowns/">Breakdowns</a>
+
+        <div class="account-area" id="accountArea"></div>
+
+    </div>
+
+</nav>
+
+<!-- HERO -->
+
+<section class="hero reveal">
+
+    <div class="hero-tag">
+        BBC Breakdown Archive
+    </div>
+
+    <h1>
+        BBC
+        <span>Breakdowns.</span>
+    </h1>
+
+    <p>
+        Explore preserved BBC television transmission failures,
+        continuity interruptions and analogue broadcasting incidents
+        across historic BBC channels.
+    </p>
+
+</section>
+
+<!-- CHANNELS -->
+
+<section class="channels">
+
+    <h2 class="section-title reveal">
+        BBC Channels
+    </h2>
+
+    <div class="channel-grid">
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">📺</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC One</h3>
+                <p>
+                    Historic BBC One transmission breakdowns,
+                    continuity interruptions and analogue incidents.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">📡</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC Two</h3>
+                <p>
+                    Preserved BBC Two signal interruptions,
+                    transmission failures and continuity breakdowns.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">🎞️</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC Three</h3>
+                <p>
+                    Archived BBC Three breakdown recordings
+                    and preserved digital-era incidents.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">📼</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC Four</h3>
+                <p>
+                    Preserved BBC Four transmission issues,
+                    continuity interruptions and rare recordings.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">📰</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC News</h3>
+                <p>
+                    Historic BBC News transmission incidents,
+                    studio failures and continuity breakdowns.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">⚽</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC Sport</h3>
+                <p>
+                    Preserved BBC Sport transmission failures
+                    and live broadcasting interruptions.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">🧒</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>CBBC</h3>
+                <p>
+                    Archived CBBC breakdowns,
+                    continuity failures and preserved recordings.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">🧸</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>CBeebies</h3>
+                <p>
+                    Historic CBeebies transmission incidents
+                    and preserved children’s continuity interruptions.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">📚</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC Knowledge</h3>
+                <p>
+                    Archived BBC Knowledge broadcasting failures
+                    and preserved continuity recordings.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">🔴</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC Red Button</h3>
+                <p>
+                    Historic BBC Red Button outages,
+                    service failures and digital interruptions.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">🏴</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC Alba</h3>
+                <p>
+                    Preserved BBC Alba transmission failures
+                    and continuity interruptions.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+        <a href="#" class="channel-card reveal">
+            <div class="channel-top">
+                <div class="channel-icon">⭐</div>
+                <div class="channel-count">Archive</div>
+            </div>
+
+            <div class="channel-content">
+                <h3>BBC Choice</h3>
+                <p>
+                    Historic BBC Choice broadcasting breakdowns
+                    and preserved analogue incidents.
+                </p>
+            </div>
+
+            <div class="channel-footer">
+                <span>Open Collection</span>
+                <span class="arrow">→</span>
+            </div>
+        </a>
+
+    </div>
+
+</section>
+
+<footer>
+    © 2026 United Kingdom Television Clips
+</footer>
+
+<script>
+
+/* ====================================== */
+/* SUPABASE */
+/* ====================================== */
+
+const SUPABASE_URL = "https://jihpgbsghatuwwkacsur.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHBnYnNnaGF0dXd3a2Fjc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzkxNzcsImV4cCI6MjA5MzcxNTE3N30.qH7iso7t2zoOLi0C68DiUKZecyIDhlxVcJAcNhYLHTk";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+/* ====================================== */
+/* PROTECT PAGE */
+/* ====================================== */
+
+async function protectPage(){
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if(!user){
+
+        window.location.href = "/";
+
+    }else{
+
+        loadUser(user);
+
+    }
+
+}
+
+protectPage();
+
+/* ====================================== */
+/* LOAD USER */
+/* ====================================== */
+
+function loadUser(user){
+
+    const email = user.email;
+
+    const username =
+    email.split("@")[0];
+
+    const firstLetter =
+    username.charAt(0).toUpperCase();
+
+    const accountArea =
+    document.getElementById("accountArea");
+
+    accountArea.innerHTML = `
+
+        <div class="account-profile" id="accountProfile">
+
+            <button
+                class="account-button"
+                onclick="toggleDropdown()">
+
+                <div class="avatar">
+                    ${firstLetter}
+                </div>
+
+                <div class="account-meta">
+
+                    <span class="account-name">
+                        ${username}
+                    </span>
+
+                    <span class="account-status">
+                        Archive Member
+                    </span>
+
+                </div>
+
+            </button>
+
+            <div class="account-dropdown">
+
+                <div class="dropdown-links">
+
+                    <a href="#">👤 My Profile</a>
+                    <a href="#">📺 Continue Watching</a>
+                    <a href="#">⭐ Saved Clips</a>
+                    <a href="#">🕓 Watch History</a>
+                    <a href="#">⚙️ Settings</a>
+                    <a href="#" onclick="logout()">🚪 Sign Out</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+/* ====================================== */
+/* DROPDOWN */
+/* ====================================== */
+
+function toggleDropdown(){
+
+    const profile =
+    document.getElementById("accountProfile");
+
+    profile.classList.toggle("active");
+
+}
+
+/* ====================================== */
+/* LOGOUT */
+/* ====================================== */
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href = "/";
+
+}
+
+/* ====================================== */
+/* REVEALS */
+/* ====================================== */
+
+const reveals =
+document.querySelectorAll(".reveal");
+
+function revealElements(){
+
+    reveals.forEach((element) => {
+
+        const windowHeight =
+        window.innerHeight;
+
+        const revealTop =
+        element.getBoundingClientRect().top;
+
+        const revealPoint = 100;
+
+        if(revealTop < windowHeight - revealPoint){
+
+            element.classList.add("active");
+
+        }
+
+    });
+
+}
+
+revealElements();
+
+window.addEventListener(
+    "scroll",
+    revealElements
+);
+
+</script>
+
+</body>
+</html>
