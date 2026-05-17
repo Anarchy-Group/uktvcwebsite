@@ -1223,6 +1223,34 @@ async function loadUser(){
     }
 
 }
+    /* ====================================== */
+/* DROPDOWN */
+/* ====================================== */
+
+function toggleDropdown(){
+
+    const profile =
+    document.getElementById("accountProfile");
+
+    profile.classList.toggle("active");
+
+}
+    /* ====================================== */
+/* LOGOUT */
+/* ====================================== */
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    location.reload();
+
+}
+    /* ====================================== */
+/* RESTORE SESSION */
+/* ====================================== */
+
+loadUser();
 /* ---------------- REVEAL ANIMATIONS ---------------- */
 
 const reveals = document.querySelectorAll(".reveal");
