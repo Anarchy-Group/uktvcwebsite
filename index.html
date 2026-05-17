@@ -12,7 +12,15 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- CLOUDFLARE TURNSTILE -->
+<script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer>
+</script>
 
 <style>
 
@@ -519,6 +527,13 @@ nav{
     box-shadow:0 0 0 4px rgba(59,130,246,0.15);
 }
 
+.turnstile-wrapper{
+    margin-top:8px;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:center;
+}
+
 .submit-login{
     width:100%;
     padding:16px;
@@ -642,8 +657,6 @@ footer{
 <div class="bg-glow"></div>
 <div class="bg-glow2"></div>
 
-<!-- NAV -->
-
 <nav>
 
     <div class="logo">
@@ -689,6 +702,19 @@ footer{
         <div class="input-group">
             <label>Password</label>
             <input type="password" id="password" placeholder="••••••••">
+        </div>
+
+        <!-- TURNSTILE -->
+
+        <div class="turnstile-wrapper">
+
+            <div
+                class="cf-turnstile"
+                data-sitekey="0x4AAAAAADN1NM40j7QfLJbA"
+                data-theme="dark"
+                data-callback="onTurnstileSuccess">
+            </div>
+
         </div>
 
         <button class="submit-login" id="authButton">
@@ -858,6 +884,14 @@ const supabaseClient = supabase.createClient(
     SUPABASE_ANON_KEY
 );
 
+/* ---------------- CAPTCHA ---------------- */
+
+let captchaToken = null;
+
+function onTurnstileSuccess(token){
+    captchaToken = token;
+}
+
 /* ---------------- LOGIN MODAL ---------------- */
 
 const loginModal = document.getElementById("loginModal");
@@ -925,8 +959,17 @@ authButton.addEventListener("click", async () => {
     const password = document.getElementById("password").value;
 
     if(!email || !password){
+
         alert("Please fill in all fields.");
         return;
+
+    }
+
+    if(!captchaToken){
+
+        alert("Please complete the CAPTCHA.");
+        return;
+
     }
 
     if(isLoginMode){
@@ -934,12 +977,17 @@ authButton.addEventListener("click", async () => {
         const { data, error } =
         await supabaseClient.auth.signInWithPassword({
             email,
-            password
+            password,
+            options:{
+                captchaToken: captchaToken
+            }
         });
 
         if(error){
+
             alert(error.message);
             return;
+
         }
 
         alert("Successfully logged in!");
@@ -950,12 +998,17 @@ authButton.addEventListener("click", async () => {
         const { data, error } =
         await supabaseClient.auth.signUp({
             email,
-            password
+            password,
+            options:{
+                captchaToken: captchaToken
+            }
         });
 
         if(error){
+
             alert(error.message);
             return;
+
         }
 
         alert("Account created! Check your email.");
@@ -991,10 +1044,8 @@ function revealElements(){
 
 }
 
-/* RUN ON LOAD */
 revealElements();
 
-/* RUN ON SCROLL */
 window.addEventListener("scroll", revealElements);
 
 </script>
