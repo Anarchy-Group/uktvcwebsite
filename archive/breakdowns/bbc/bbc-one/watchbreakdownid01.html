@@ -370,38 +370,36 @@ nav{
 }
 
 /* ====================================== */
-/* SEEK BAR */
+/* PROGRESS BAR */
 /* ====================================== */
 
 .video-js .vjs-progress-control{
 
-    flex:1 !important;
+    position:relative !important;
+
+    flex:1 1 auto !important;
 
     display:flex !important;
     align-items:center !important;
 
-    margin:
-        0 18px !important;
+    min-width:120px !important;
 
-    min-width:0 !important;
+    margin:
+        0 16px !important;
 }
+
 .video-js .vjs-progress-holder{
 
     flex:1 !important;
 
-    margin:0 !important;
-
     height:7px !important;
 
-    border-radius:999px;
+    border-radius:999px !important;
 
     background:
-        rgba(255,255,255,0.12);
-}
+        rgba(255,255,255,0.14) !important;
 
-.video-js:hover .vjs-progress-holder{
-
-    height:10px;
+    overflow:hidden;
 }
 
 /* PLAYED */
@@ -413,27 +411,23 @@ nav{
             90deg,
             #60a5fa,
             #2563eb
-        );
+        ) !important;
 
     border-radius:999px;
 
     box-shadow:
-        0 0 18px rgba(96,165,250,0.6);
+        0 0 18px rgba(96,165,250,0.45);
 }
 
-/* BUFFERED */
+/* BUFFER */
 
 .video-js .vjs-load-progress{
 
-    border-radius:999px;
-
     background:
-        rgba(255,255,255,0.08);
+        rgba(255,255,255,0.08) !important;
 }
 
-/* ====================================== */
-/* PROGRESS HANDLE */
-/* ====================================== */
+/* HANDLE */
 
 .video-js .vjs-play-progress:before{
 
@@ -446,15 +440,14 @@ nav{
 
     background:white;
 
-    top:50%;
-    right:-10px;
+    top:50% !important;
+    right:-10px !important;
 
-    transform:translateY(-50%);
+    transform:translateY(-50%) !important;
 
     box-shadow:
-        0 0 20px rgba(255,255,255,0.5);
+        0 0 18px rgba(255,255,255,0.5);
 }
-
 /* ====================================== */
 /* TIME DISPLAY */
 /* ====================================== */
@@ -504,7 +497,6 @@ nav{
 
 .video-js .vjs-control{
 
-    width:58px !important;
     display:flex !important;
     align-items:center !important;
     justify-content:center !important;
@@ -634,6 +626,20 @@ nav{
 
     display:flex !important;
     align-items:center;
+}
+
+/* ====================================== */
+/* REMOVE UNUSED CONTROLS */
+/* ====================================== */
+
+.video-js .vjs-live-control,
+.video-js .vjs-picture-in-picture-control,
+.video-js .vjs-chapters-button,
+.video-js .vjs-descriptions-button,
+.video-js .vjs-audio-button,
+.video-js .vjs-subs-caps-button{
+
+    display:none !important;
 }
 /* ====================================== */
 /* VIDEO CONTENT */
@@ -1130,13 +1136,29 @@ const player = videojs('archivePlayer', {
     fluid:true,
     responsive:true,
 
+    controls:true,
+
     playbackRates:[
         0.5,
         1,
         1.25,
         1.5,
         2
-    ]
+    ],
+
+    controlBar:{
+
+        pictureInPictureToggle:false,
+
+        chaptersButton:false,
+        descriptionsButton:false,
+        subsCapsButton:false,
+        audioTrackButton:false,
+
+        remainingTimeDisplay:true,
+        playbackRateMenuButton:true
+
+    }
 
 });
 
