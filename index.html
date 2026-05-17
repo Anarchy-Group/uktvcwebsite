@@ -175,7 +175,92 @@ nav{
 .login-btn:hover{
     transform:translateY(-3px);
 }
+/* ====================================== */
+/* ACCOUNT AREA */
+/* ====================================== */
 
+.account-area{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.account-profile{
+    position:relative;
+}
+
+.account-button{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 18px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.04);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.account-button:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.avatar{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:0.9rem;
+}
+
+.account-dropdown{
+    position:absolute;
+    top:70px;
+    right:0;
+    width:220px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:22px;
+    padding:14px;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:0.3s;
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+}
+
+.account-profile.active .account-dropdown{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0px);
+}
+
+.dropdown-email{
+    color:#9ca3af;
+    font-size:0.85rem;
+    margin-bottom:14px;
+    word-break:break-word;
+}
+
+.logout-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#1f2937;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.logout-btn:hover{
+    background:#374151;
+}
 /* ---------------- HERO ---------------- */
 
 .hero{
@@ -1018,8 +1103,9 @@ authButton.addEventListener("click", async () => {
 
         }
 
-        alert("Successfully logged in!");
         closeLoginModal();
+
+        loadUser();
 
     }else{
 
@@ -1072,6 +1158,69 @@ async function forgotPassword(){
     }
 
     alert("Password reset email sent!");
+
+}
+    /* ====================================== */
+/* LOAD USER */
+/* ====================================== */
+
+async function loadUser(){
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    const accountArea =
+    document.getElementById("accountArea");
+
+    if(user){
+
+        const email = user.email;
+        const username =
+        email.split("@")[0];
+
+        const firstLetter =
+        username.charAt(0).toUpperCase();
+
+        accountArea.innerHTML = `
+
+            <div class="account-profile" id="accountProfile">
+
+                <button
+                    class="account-button"
+                    onclick="toggleDropdown()">
+
+                    <div class="avatar">
+                        ${firstLetter}
+                    </div>
+
+                    <span>
+                        ${username}
+                    </span>
+
+                </button>
+
+                <div class="account-dropdown">
+
+                    <div class="dropdown-email">
+                        ${email}
+                    </div>
+
+                    <button
+                        class="logout-btn"
+                        onclick="logout()">
+
+                        Logout
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
 
 }
 /* ---------------- REVEAL ANIMATIONS ---------------- */
