@@ -400,75 +400,187 @@ nav{
 /* CATEGORY GRID */
 /* ====================================== */
 
-.categories{
-    padding:0 7% 120px;
-}
-
-.section-title{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:3rem;
-    margin-bottom:50px;
-}
-
 .category-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:26px;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:28px;
 }
 
 .category-card{
     position:relative;
     overflow:hidden;
-    min-height:260px;
-    border-radius:32px;
+    min-height:320px;
+    border-radius:34px;
     padding:30px;
     display:flex;
     flex-direction:column;
-    justify-content:flex-end;
-    transition:0.4s;
+    justify-content:space-between;
+    transition:0.45s cubic-bezier(.16,1,.3,1);
     border:1px solid rgba(255,255,255,0.08);
     background:rgba(255,255,255,0.04);
     backdrop-filter:blur(20px);
+    text-decoration:none;
+    color:white;
+    isolation:isolate;
+}
+
+.category-background{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.05),
+            transparent
+        );
+
+    z-index:-2;
+}
+
+.category-glow{
+    position:absolute;
+    width:240px;
+    height:240px;
+    background:#2563eb20;
+    border-radius:50%;
+    filter:blur(70px);
+    top:-80px;
+    right:-80px;
+    opacity:0;
+    transition:0.5s;
+    z-index:-1;
+}
+
+.category-card:hover .category-glow{
+    opacity:1;
 }
 
 .category-card::before{
     content:"";
     position:absolute;
     inset:0;
-    background:linear-gradient(
-        135deg,
-        rgba(255,255,255,0.04),
-        transparent
-    );
+    border-radius:34px;
+    padding:1px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.18),
+            transparent
+        );
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
 }
 
 .category-card:hover{
-    transform:translateY(-10px);
-    box-shadow:0 30px 60px rgba(0,0,0,0.35);
+    transform:
+        translateY(-14px)
+        scale(1.02);
+
+    box-shadow:
+        0 35px 80px rgba(0,0,0,0.45);
+
+    border-color:
+        rgba(96,165,250,0.22);
+}
+
+.category-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
 }
 
 .category-icon{
-    font-size:2.5rem;
-    margin-bottom:18px;
+    width:72px;
+    height:72px;
+    border-radius:24px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    transition:0.4s;
 }
 
-.category-card h3{
-    font-size:1.6rem;
-    margin-bottom:14px;
+.category-card:hover .category-icon{
+    transform:
+        scale(1.08)
+        rotate(-4deg);
 }
 
-.category-card p{
+.category-count{
+    padding:10px 16px;
+    border-radius:999px;
+    background:rgba(96,165,250,0.12);
+    border:1px solid rgba(96,165,250,0.18);
+    color:#93c5fd;
+    font-size:0.82rem;
+}
+
+.category-content h3{
+    font-size:2rem;
+    margin-bottom:16px;
+    font-family:'Space Grotesk',sans-serif;
+}
+
+.category-content p{
     color:#cbd5e1;
-    line-height:1.7;
-    margin-bottom:22px;
+    line-height:1.8;
+    font-size:0.98rem;
 }
 
-.category-meta{
+.category-footer{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    margin-top:30px;
     color:#93c5fd;
-    font-size:0.92rem;
+    font-weight:600;
+}
+
+.arrow{
+    font-size:1.4rem;
+    transition:0.35s;
+}
+
+.category-card:hover .arrow{
+    transform:translateX(8px);
+}
+
+/* ====================================== */
+/* CATEGORY REVEAL */
+/* ====================================== */
+
+.category-card{
+    opacity:0;
+    transform:translateY(60px);
+}
+
+.category-card.active{
+    opacity:1;
+    transform:translateY(0px);
+}
+
+/* ====================================== */
+/* MOBILE */
+/* ====================================== */
+
+@media(max-width:700px){
+
+    .category-grid{
+        grid-template-columns:1fr;
+    }
+
+    .category-card{
+        min-height:280px;
+    }
+
 }
 
 /* ====================================== */
@@ -663,110 +775,250 @@ footer{
 
     <div class="category-grid">
 
-        <div class="category-card reveal">
+        <!-- BREAKDOWNS -->
 
-            <div class="category-icon">
-                📼
+        <a
+            href="/archive/breakdowns/"
+            class="category-card reveal">
+
+            <div class="category-background"></div>
+
+            <div class="category-glow"></div>
+
+            <div class="category-top">
+
+                <div class="category-icon">
+                    📼
+                </div>
+
+                <div class="category-count">
+                    248 Clips
+                </div>
+
             </div>
 
-            <h3>
-                Breakdowns
-            </h3>
+            <div class="category-content">
 
-            <p>
-                Television breakdowns, signal interruptions and preserved analogue transmission incidents.
-            </p>
+                <h3>
+                    Breakdowns
+                </h3>
 
-            <div class="category-meta">
-                <span>Protected Archive</span>
-                <span>→</span>
+                <p>
+                    Television breakdowns, signal interruptions
+                    and preserved analogue transmission incidents.
+                </p>
+
             </div>
 
-        </div>
+            <div class="category-footer">
 
-        <div class="category-card reveal">
+                <span>
+                    Open Archive
+                </span>
 
-            <div class="category-icon">
-                📺
+                <span class="arrow">
+                    →
+                </span>
+
             </div>
 
-            <h3>
-                ECPs
-            </h3>
+        </a>
 
-            <p>
-                End credit promotions and continuity transitions from historic British broadcasts.
-            </p>
+        <!-- ECPS -->
 
-            <div class="category-meta">
-                <span>Protected Archive</span>
-                <span>→</span>
+        <a
+            href="/archive/ecps/"
+            class="category-card reveal">
+
+            <div class="category-background"></div>
+
+            <div class="category-glow"></div>
+
+            <div class="category-top">
+
+                <div class="category-icon">
+                    📺
+                </div>
+
+                <div class="category-count">
+                    391 Clips
+                </div>
+
             </div>
 
-        </div>
+            <div class="category-content">
 
-        <div class="category-card reveal">
+                <h3>
+                    ECPs
+                </h3>
 
-            <div class="category-icon">
-                🎞️
+                <p>
+                    End credit promotions and continuity
+                    transitions from historic British broadcasts.
+                </p>
+
             </div>
 
-            <h3>
-                Idents
-            </h3>
+            <div class="category-footer">
 
-            <p>
-                Preserved television idents from BBC, ITV, Channel 4 and historic UK broadcasters.
-            </p>
+                <span>
+                    Open Archive
+                </span>
 
-            <div class="category-meta">
-                <span>Protected Archive</span>
-                <span>→</span>
+                <span class="arrow">
+                    →
+                </span>
+
             </div>
 
-        </div>
+        </a>
 
-        <div class="category-card reveal">
+        <!-- IDENTS -->
 
-            <div class="category-icon">
-                ▶️
+        <a
+            href="/archive/idents/"
+            class="category-card reveal">
+
+            <div class="category-background"></div>
+
+            <div class="category-glow"></div>
+
+            <div class="category-top">
+
+                <div class="category-icon">
+                    🎞️
+                </div>
+
+                <div class="category-count">
+                    520 Clips
+                </div>
+
             </div>
 
-            <h3>
-                Intros
-            </h3>
+            <div class="category-content">
 
-            <p>
-                Television programme intros, launch sequences and classic British TV openings.
-            </p>
+                <h3>
+                    Idents
+                </h3>
 
-            <div class="category-meta">
-                <span>Protected Archive</span>
-                <span>→</span>
+                <p>
+                    Preserved television idents from BBC,
+                    ITV, Channel 4 and historic UK broadcasters.
+                </p>
+
             </div>
 
-        </div>
+            <div class="category-footer">
 
-        <div class="category-card reveal">
+                <span>
+                    Open Archive
+                </span>
 
-            <div class="category-icon">
-                📁
+                <span class="arrow">
+                    →
+                </span>
+
             </div>
 
-            <h3>
-                Miscellaneous
-            </h3>
+        </a>
 
-            <p>
-                Additional preserved archive material including promos, rare clips and uncategorised content.
-            </p>
+        <!-- INTROS -->
 
-            <div class="category-meta">
-                <span>Protected Archive</span>
-                <span>→</span>
+        <a
+            href="/archive/intros/"
+            class="category-card reveal">
+
+            <div class="category-background"></div>
+
+            <div class="category-glow"></div>
+
+            <div class="category-top">
+
+                <div class="category-icon">
+                    ▶️
+                </div>
+
+                <div class="category-count">
+                    184 Clips
+                </div>
+
             </div>
 
-        </div>
+            <div class="category-content">
+
+                <h3>
+                    Intros
+                </h3>
+
+                <p>
+                    Television programme intros,
+                    launch sequences and classic TV openings.
+                </p>
+
+            </div>
+
+            <div class="category-footer">
+
+                <span>
+                    Open Archive
+                </span>
+
+                <span class="arrow">
+                    →
+                </span>
+
+            </div>
+
+        </a>
+
+        <!-- MISC -->
+
+        <a
+            href="/archive/misc/"
+            class="category-card reveal">
+
+            <div class="category-background"></div>
+
+            <div class="category-glow"></div>
+
+            <div class="category-top">
+
+                <div class="category-icon">
+                    📁
+                </div>
+
+                <div class="category-count">
+                    112 Clips
+                </div>
+
+            </div>
+
+            <div class="category-content">
+
+                <h3>
+                    Miscellaneous
+                </h3>
+
+                <p>
+                    Additional preserved archive material
+                    including promos, rare clips and uncategorised content.
+                </p>
+
+            </div>
+
+            <div class="category-footer">
+
+                <span>
+                    Open Archive
+                </span>
+
+                <span class="arrow">
+                    →
+                </span>
+
+            </div>
+
+        </a>
 
     </div>
 
@@ -1040,6 +1292,16 @@ function revealElements(){
         if(revealTop < windowHeight - revealPoint){
 
             element.classList.add("active");
+
+            const cards =
+            document.querySelectorAll(".category-card");
+
+            cards.forEach((card, index) => {
+
+                card.style.transitionDelay =
+                `${index * 0.08}s`;
+
+            });
 
         }else{
 
