@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Archive — UK Television Clips</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+/* ====================================== */
+/* RESET */
+/* ====================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#070b14;
+    color:white;
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* ====================================== */
+/* BACKGROUND */
+/* ====================================== */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(37,99,235,0.18), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(255,0,85,0.12), transparent 30%);
+    animation:bgMove 14s ease-in-out infinite alternate;
+    z-index:-4;
+}
+
+@keyframes bgMove{
+
+    from{
+        transform:scale(1) translateY(0px);
+    }
+
+    to{
+        transform:scale(1.1) translateY(-30px);
+    }
+
+}
+
+.noise{
+    position:fixed;
+    inset:0;
+    opacity:0.035;
+    pointer-events:none;
+    z-index:-3;
+    background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+}
+
+.bg-glow{
+    position:fixed;
+    width:700px;
+    height:700px;
+    background:#0047ff25;
+    filter:blur(120px);
+    top:-200px;
+    right:-150px;
+    z-index:-2;
+}
+
+.bg-glow2{
+    position:fixed;
+    width:600px;
+    height:600px;
+    background:#ff004425;
+    filter:blur(120px);
+    bottom:-200px;
+    left:-150px;
+    z-index:-2;
+}
+
+/* ====================================== */
+/* NAV */
+/* ====================================== */
+
+nav{
+    width:100%;
+    padding:20px 7%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:fixed;
+    top:0;
+    backdrop-filter:blur(16px);
+    background:rgba(7,11,20,0.65);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    z-index:1000;
+}
+
+.logo{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.5rem;
+    font-weight:700;
+}
+
+.logo span{
+    color:#60a5fa;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+.nav-links a{
+    color:#d6d6d6;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+/* ====================================== */
+/* ACCOUNT */
+/* ====================================== */
+
+.account-area{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.account-profile{
+    position:relative;
+}
+
+.account-button{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 18px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.04);
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.account-button:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+}
+
+.account-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.account-name{
+    font-size:0.95rem;
+    font-weight:600;
+}
+
+.account-status{
+    font-size:0.78rem;
+    color:#60a5fa;
+}
+
+.account-dropdown{
+    position:absolute;
+    top:75px;
+    right:0;
+    width:260px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:24px;
+    padding:18px;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:0.3s;
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+}
+
+.account-profile.active .account-dropdown{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0px);
+}
+
+.dropdown-header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding-bottom:18px;
+    margin-bottom:18px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.dropdown-avatar{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#60a5fa);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:1rem;
+}
+
+.dropdown-name{
+    font-weight:600;
+    margin-bottom:4px;
+}
+
+.dropdown-email{
+    color:#9ca3af;
+    font-size:0.82rem;
+}
+
+.dropdown-links{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:18px;
+}
+
+.dropdown-links a{
+    padding:12px 14px;
+    border-radius:14px;
+    color:#d1d5db;
+    text-decoration:none;
+    transition:0.3s;
+    font-size:0.92rem;
+}
+
+.dropdown-links a:hover{
+    background:rgba(255,255,255,0.06);
+    transform:translateX(4px);
+    color:white;
+}
+
+.logout-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#1f2937;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.logout-btn:hover{
+    background:#374151;
+}
+
+/* ====================================== */
+/* HERO */
+/* ====================================== */
+
+.hero{
+    padding:170px 7% 80px;
+}
+
+.hero-content{
+    max-width:900px;
+}
+
+.hero-tag{
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(96,165,250,0.12);
+    border:1px solid rgba(96,165,250,0.18);
+    color:#93c5fd;
+    margin-bottom:28px;
+}
+
+.hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:5rem;
+    line-height:1;
+    margin-bottom:28px;
+}
+
+.hero h1 span{
+    background:linear-gradient(90deg,#60a5fa,#2563eb);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+    color:#b9c0d3;
+    line-height:1.9;
+    font-size:1.08rem;
+    max-width:700px;
+}
+
+/* ====================================== */
+/* FEATURED */
+/* ====================================== */
+
+.featured{
+    padding:0 7% 90px;
+}
+
+.featured-banner{
+    position:relative;
+    overflow:hidden;
+    border-radius:36px;
+    min-height:420px;
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,0.75),
+            rgba(0,0,0,0.2)
+        ),
+        url('https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1600&auto=format&fit=crop');
+
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:flex-end;
+    padding:50px;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.featured-content{
+    max-width:700px;
+}
+
+.featured-tag{
+    color:#93c5fd;
+    margin-bottom:16px;
+}
+
+.featured-content h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:3rem;
+    margin-bottom:18px;
+}
+
+.featured-content p{
+    color:#d1d5db;
+    line-height:1.8;
+    margin-bottom:28px;
+}
+
+.watch-btn{
+    padding:16px 26px;
+    border:none;
+    border-radius:16px;
+    background:#2563eb;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.watch-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* ====================================== */
+/* CATEGORY GRID */
+/* ====================================== */
+
+.categories{
+    padding:0 7% 120px;
+}
+
+.section-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:3rem;
+    margin-bottom:50px;
+}
+
+.category-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:26px;
+}
+
+.category-card{
+    position:relative;
+    overflow:hidden;
+    min-height:260px;
+    border-radius:32px;
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    transition:0.4s;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(20px);
+}
+
+.category-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,0.04),
+        transparent
+    );
+}
+
+.category-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 30px 60px rgba(0,0,0,0.35);
+}
+
+.category-icon{
+    font-size:2.5rem;
+    margin-bottom:18px;
+}
+
+.category-card h3{
+    font-size:1.6rem;
+    margin-bottom:14px;
+}
+
+.category-card p{
+    color:#cbd5e1;
+    line-height:1.7;
+    margin-bottom:22px;
+}
+
+.category-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#93c5fd;
+    font-size:0.92rem;
+}
+
+/* ====================================== */
+/* RECENT */
+/* ====================================== */
+
+.recent{
+    padding:0 7% 120px;
+}
+
+.recent-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:24px;
+}
+
+.recent-card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:28px;
+    overflow:hidden;
+    transition:0.4s;
+}
+
+.recent-card:hover{
+    transform:translateY(-8px);
+}
+
+.recent-thumbnail{
+    height:200px;
+    background:#1f2937;
+}
+
+.recent-thumbnail img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.recent-content{
+    padding:24px;
+}
+
+.recent-content h3{
+    margin-bottom:12px;
+}
+
+.recent-content p{
+    color:#b9c0d3;
+    line-height:1.7;
+}
+
+/* ====================================== */
+/* REVEALS */
+/* ====================================== */
+
+.reveal{
+    opacity:0;
+    transform:translateY(60px);
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:translateY(0px);
+}
+
+/* ====================================== */
+/* FOOTER */
+/* ====================================== */
+
+footer{
+    padding:50px 7%;
+    border-top:1px solid rgba(255,255,255,0.08);
+    color:#9ca3af;
+    text-align:center;
+}
+
+/* ====================================== */
+/* MOBILE */
+/* ====================================== */
+
+@media(max-width:900px){
+
+    .hero h1{
+        font-size:3.5rem;
+    }
+
+    .nav-links a{
+        display:none;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="noise"></div>
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+
+<!-- NAV -->
+
+<nav>
+
+    <div class="logo">
+        UK<span>TV</span>Clips
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Home</a>
+        <a href="/archive">Archive</a>
+        <a href="/collections">Collections</a>
+        <a href="/channels">Channels</a>
+        <a href="/about">About</a>
+
+        <div class="account-area" id="accountArea"></div>
+
+    </div>
+
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-content reveal">
+
+        <div class="hero-tag">
+            Protected Television Archive
+        </div>
+
+        <h1>
+            Explore Britain’s
+            <span>Broadcasting History.</span>
+        </h1>
+
+        <p>
+            Access preserved television broadcasts, continuity announcements,
+            idents, intros, commercials and rare British television recordings
+            from across the United Kingdom.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- FEATURED -->
+
+<section class="featured reveal">
+
+    <div class="featured-banner">
+
+        <div class="featured-content">
+
+            <div class="featured-tag">
+                Featured Preservation
+            </div>
+
+            <h2>
+                BBC One Continuity Archive
+            </h2>
+
+            <p>
+                Explore preserved analogue continuity recordings,
+                classic BBC announcements and nostalgic broadcasting history.
+            </p>
+
+            <button class="watch-btn">
+                Watch Collection
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CATEGORIES -->
+
+<section class="categories">
+
+    <h2 class="section-title reveal">
+        Archive Categories
+    </h2>
+
+    <div class="category-grid">
+
+        <div class="category-card reveal">
+
+            <div class="category-icon">
+                📼
+            </div>
+
+            <h3>
+                Breakdowns
+            </h3>
+
+            <p>
+                Television breakdowns, signal interruptions and preserved analogue transmission incidents.
+            </p>
+
+            <div class="category-meta">
+                <span>Protected Archive</span>
+                <span>→</span>
+            </div>
+
+        </div>
+
+        <div class="category-card reveal">
+
+            <div class="category-icon">
+                📺
+            </div>
+
+            <h3>
+                ECPs
+            </h3>
+
+            <p>
+                End credit promotions and continuity transitions from historic British broadcasts.
+            </p>
+
+            <div class="category-meta">
+                <span>Protected Archive</span>
+                <span>→</span>
+            </div>
+
+        </div>
+
+        <div class="category-card reveal">
+
+            <div class="category-icon">
+                🎞️
+            </div>
+
+            <h3>
+                Idents
+            </h3>
+
+            <p>
+                Preserved television idents from BBC, ITV, Channel 4 and historic UK broadcasters.
+            </p>
+
+            <div class="category-meta">
+                <span>Protected Archive</span>
+                <span>→</span>
+            </div>
+
+        </div>
+
+        <div class="category-card reveal">
+
+            <div class="category-icon">
+                ▶️
+            </div>
+
+            <h3>
+                Intros
+            </h3>
+
+            <p>
+                Television programme intros, launch sequences and classic British TV openings.
+            </p>
+
+            <div class="category-meta">
+                <span>Protected Archive</span>
+                <span>→</span>
+            </div>
+
+        </div>
+
+        <div class="category-card reveal">
+
+            <div class="category-icon">
+                📁
+            </div>
+
+            <h3>
+                Miscellaneous
+            </h3>
+
+            <p>
+                Additional preserved archive material including promos, rare clips and uncategorised content.
+            </p>
+
+            <div class="category-meta">
+                <span>Protected Archive</span>
+                <span>→</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- RECENT -->
+
+<section class="recent">
+
+    <h2 class="section-title reveal">
+        Recently Added
+    </h2>
+
+    <div class="recent-grid">
+
+        <div class="recent-card reveal">
+
+            <div class="recent-thumbnail">
+                <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1200&auto=format&fit=crop">
+            </div>
+
+            <div class="recent-content">
+
+                <h3>
+                    ITV Regional Ident Collection
+                </h3>
+
+                <p>
+                    Preserved regional ITV idents and continuity broadcasts from the analogue era.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="recent-card reveal">
+
+            <div class="recent-thumbnail">
+                <img src="https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?q=80&w=1200&auto=format&fit=crop">
+            </div>
+
+            <div class="recent-content">
+
+                <h3>
+                    BBC One 1997 Continuity
+                </h3>
+
+                <p>
+                    Classic BBC continuity recordings and preserved analogue television presentation.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="recent-card reveal">
+
+            <div class="recent-thumbnail">
+                <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=1200&auto=format&fit=crop">
+            </div>
+
+            <div class="recent-content">
+
+                <h3>
+                    Channel 4 Launch Archive
+                </h3>
+
+                <p>
+                    Historic Channel 4 launch material and preserved continuity presentation clips.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+    © 2026 United Kingdom Television Clips
+</footer>
+
+<script>
+
+/* ====================================== */
+/* SUPABASE */
+/* ====================================== */
+
+const SUPABASE_URL = "https://jihpgbsghatuwwkacsur.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppaHBnYnNnaGF0dXd3a2Fjc3VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMzkxNzcsImV4cCI6MjA5MzcxNTE3N30.qH7iso7t2zoOLi0C68DiUKZecyIDhlxVcJAcNhYLHTk";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+/* ====================================== */
+/* PROTECT PAGE */
+/* ====================================== */
+
+async function protectPage(){
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if(!user){
+
+        window.location.href = "/";
+
+    }else{
+
+        loadUser(user);
+
+    }
+
+}
+
+protectPage();
+
+/* ====================================== */
+/* LOAD USER */
+/* ====================================== */
+
+function loadUser(user){
+
+    const email = user.email;
+
+    const username =
+    email.split("@")[0];
+
+    const firstLetter =
+    username.charAt(0).toUpperCase();
+
+    const accountArea =
+    document.getElementById("accountArea");
+
+    accountArea.innerHTML = `
+
+        <div class="account-profile" id="accountProfile">
+
+            <button
+                class="account-button"
+                onclick="toggleDropdown()">
+
+                <div class="avatar">
+                    ${firstLetter}
+                </div>
+
+                <div class="account-meta">
+
+                    <span class="account-name">
+                        ${username}
+                    </span>
+
+                    <span class="account-status">
+                        Archive Member
+                    </span>
+
+                </div>
+
+            </button>
+
+            <div class="account-dropdown">
+
+                <div class="dropdown-header">
+
+                    <div class="dropdown-avatar">
+                        ${firstLetter}
+                    </div>
+
+                    <div>
+
+                        <div class="dropdown-name">
+                            ${username}
+                        </div>
+
+                        <div class="dropdown-email">
+                            ${email}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="dropdown-links">
+
+                    <a href="#">
+                        👤 My Profile
+                    </a>
+
+                    <a href="#">
+                        📺 Continue Watching
+                    </a>
+
+                    <a href="#">
+                        ⭐ Saved Clips
+                    </a>
+
+                    <a href="#">
+                        🕓 Watch History
+                    </a>
+
+                    <a href="#">
+                        ⚙️ Settings
+                    </a>
+
+                </div>
+
+                <button
+                    class="logout-btn"
+                    onclick="logout()">
+
+                    🚪 Sign Out
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+/* ====================================== */
+/* DROPDOWN */
+/* ====================================== */
+
+function toggleDropdown(){
+
+    const profile =
+    document.getElementById("accountProfile");
+
+    profile.classList.toggle("active");
+
+}
+
+/* ====================================== */
+/* LOGOUT */
+/* ====================================== */
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href = "/";
+
+}
+
+/* ====================================== */
+/* REVEAL ANIMATIONS */
+/* ====================================== */
+
+const reveals =
+document.querySelectorAll(".reveal");
+
+function revealElements(){
+
+    reveals.forEach((element) => {
+
+        const windowHeight =
+        window.innerHeight;
+
+        const revealTop =
+        element.getBoundingClientRect().top;
+
+        const revealPoint = 100;
+
+        if(revealTop < windowHeight - revealPoint){
+
+            element.classList.add("active");
+
+        }else{
+
+            element.classList.remove("active");
+
+        }
+
+    });
+
+}
+
+revealElements();
+
+window.addEventListener(
+    "scroll",
+    revealElements
+);
+
+</script>
+
+</body>
+</html>
